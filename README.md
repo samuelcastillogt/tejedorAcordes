@@ -1,6 +1,10 @@
-# Welcome to your Expo app 👋
+# TejedorApp
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicacion movil Expo/React Native para ChordWeaver. Consume el backend publicado en Vercel:
+
+```txt
+https://chords-api-python.vercel.app
+```
 
 ## Get started
 
@@ -23,7 +27,22 @@ In the output, you'll find options to open the app in a
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+La pantalla principal esta en `src/screens/Home.tsx` y se expone desde `src/app/index.tsx`. La ruta `src/app/tabs.tsx` contiene el editor de progresiones, analisis de tension y generacion de tablatura.
+
+## Verification
+
+```bash
+npx tsc --noEmit
+npm run lint
+npx expo export --platform ios --output-dir /tmp/tejedorapp-ios-check --clear
+npx expo export --platform android --output-dir /tmp/tejedorapp-android-check --clear
+```
+
+## Startup Stability Notes
+
+- Las pantallas reutilizables viven fuera de `src/app`, para que Expo Router no registre rutas internas accidentales.
+- El layout raiz se mantiene como `Stack` simple sin overlay animado de Reanimated/Worklets, evitando cierres silenciosos durante el arranque.
+- Si la app se cierra antes de renderizar, revisa `.expo/dev/logs/start.log` y corre los comandos de exportacion para forzar diagnosticos de bundling.
 
 ## Get a fresh project
 
