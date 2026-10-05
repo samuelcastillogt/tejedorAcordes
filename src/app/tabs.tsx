@@ -3,17 +3,13 @@ import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, Text
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { cw } from '@/constants/chordweaver-theme';
-import { analyzeProgression, generateTablature, TablatureResponse } from '@/lib/api';
-import { categoryColor, categoryLabel } from '@/lib/music';
+import { analyzeProgression, AnalyzeResponse, generateTablature, TablatureResponse } from '@/lib/api';
+import { categoryColor, categoryLabel, functionColor } from '@/lib/music';
 
 const starterProgression = ['C', 'G7', 'Am', 'F'];
 const quickChords = ['C', 'G', 'G7', 'Am', 'F', 'Dm', 'Em', 'A7', 'D', 'E7', 'Bm', 'F+'];
 
-type Analysis = {
-  averageScore: number;
-  suggestions: string[];
-  tensionCurve: { from: string; to: string; score: number; category: 'natural' | 'media' | 'tensa' | 'extrema' }[];
-};
+type Analysis = AnalyzeResponse['analysis'];
 
 export default function ProgressionScreen() {
   const [name, setName] = useState('Nueva progresion movil');
@@ -43,7 +39,7 @@ export default function ProgressionScreen() {
     setLoading('analysis');
     setError(null);
     try {
-      const response = await analyzeProgression(progression, 'C');
+      const response = await analyzeProgression(progression);
       setAnalysis(response.analysis);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo analizar');
@@ -118,6 +114,16 @@ export default function ProgressionScreen() {
 
         {analysis && (
           <View style={styles.card}>
+            <Text style={styles.label}>Tonalidad</Text>
+            <Text style={styles.analysisScore}>{analysis.key.label}</Text>
+            <View style={styles.degreeRow}>
+              {analysis.degrees.map((degree, index) => (
+                <View key={`${degree.input}-${index}`} style={[styles.degreeChip, { borderTopColor: functionColor(degree.function, degree.role) }]}>
+                  <Text style={styles.degreeChord}>{degree.input}</Text>
+                  <Text style={[styles.degreeNumeral, { color: functionColor(degree.function, degree.role) }]}>{degree.numeral}</Text>
+                </View>
+              ))}
+            </View>
             <Text style={styles.label}>Curva de tension</Text>
             <Text style={styles.analysisScore}>Score promedio: {analysis.averageScore}</Text>
             <Text style={styles.helper}>{analysis.suggestions.join(' ')}</Text>
@@ -173,6 +179,10 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.5 },
   errorText: { color: cw.danger, fontSize: 14, lineHeight: 20 },
   analysisScore: { color: cw.ink, fontSize: 20, fontWeight: '800' },
+  degreeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginVertical: 8 },
+  degreeChip: { borderTopWidth: 4, borderRadius: 8, backgroundColor: '#f6f1e7', paddingHorizontal: 10, paddingVertical: 6, alignItems: 'center' },
+  degreeChord: { color: cw.ink, fontSize: 15, fontWeight: '700' },
+  degreeNumeral: { fontSize: 18, fontWeight: '800' },
   tensionRow: { backgroundColor: cw.canvasSoft, borderRadius: 14, gap: 4, padding: 14 },
   tensionText: { color: cw.ink, fontSize: 16, fontWeight: '800' },
   tensionScore: { fontSize: 14, fontWeight: '800' },

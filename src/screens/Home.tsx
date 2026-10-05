@@ -110,7 +110,7 @@ export default function Home() {
                 Familia {selected?.type ?? '-'} - Triada {selected?.triad.join('-') ?? '-'}
               </Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-                {chords.slice(0, 36).map((chord) => (
+                {chords.filter((chord) => ['major', 'minor', 'dom7'].includes(chord.type)).slice(0, 36).map((chord) => (
                   <Pressable
                     key={chord.id}
                     onPress={() => setSelectedChord(chord.id)}

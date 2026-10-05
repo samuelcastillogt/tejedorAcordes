@@ -20,3 +20,13 @@ export function chordFamilyColor(type: string) {
   if (type === 'aug') return '#22c55e';
   return '#c9b4fa';
 }
+
+/** Colour of a harmonic function (T / SD / D) or a non-diatonic chord role. */
+export function functionColor(fn: string | null, role?: string) {
+  if (role === 'borrowed') return '#7b5cd6';
+  if (role === 'chromatic') return '#6b7280';
+  if (fn === 'T') return '#1f8a70';
+  if (fn === 'SD') return '#c98a14';
+  if (fn === 'D') return '#d4462b';
+  return '#6b7280';
+}

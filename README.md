@@ -1,10 +1,14 @@
 # TejedorApp
 
-Aplicacion movil Expo/React Native para ChordWeaver. Consume el backend publicado en Vercel:
+Aplicación móvil Expo/React Native para ChordWeaver. Consume el backend publicado en Vercel:
 
 ```txt
 https://chords-api-python.vercel.app
 ```
+
+Para usar una API local define `EXPO_PUBLIC_API_URL` (por ejemplo `EXPO_PUBLIC_API_URL=http://192.168.1.10:8000 npx expo start`).
+
+El análisis de progresiones ya no fija la tonalidad en C: la API la detecta y la app muestra la tonalidad y el grado romano de cada acorde con el color de su función armónica (verde tónica, ámbar subdominante, rojo dominante, violeta prestado), el mismo código de color que la web.
 
 ## Get started
 

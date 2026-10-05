@@ -1,9 +1,11 @@
-export const API_URL = 'https://chords-api-python.vercel.app';
+export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://chords-api-python.vercel.app';
 
 export type Chord = {
   id: string;
   root: string;
   type: string;
+  family?: string;
+  notes?: string[];
   triad: string[];
   circlePosition: number;
 };
@@ -20,9 +22,20 @@ export type ConnectionsResponse = {
   total: number;
 };
 
+export type Degree = {
+  input: string;
+  chord: string;
+  numeral: string;
+  function: 'T' | 'SD' | 'D' | null;
+  role: 'diatonic' | 'secondary_dominant' | 'borrowed' | 'chromatic';
+  explanation: string;
+};
+
 export type AnalyzeResponse = {
   analysis: {
     chords: string[];
+    key: { id: string; label: string; detected: boolean; confidence: number };
+    degrees: Degree[];
     tensionCurve: { from: string; to: string; score: number; category: Connection['category'] }[];
     averageScore: number;
     suggestions: string[];
@@ -69,10 +82,11 @@ export function getConnections(chordId: string, tonality: string) {
   );
 }
 
-export function analyzeProgression(chords: string[], tonality: string) {
+/** Without a tonality the API detects the key from the chords. */
+export function analyzeProgression(chords: string[], tonality?: string) {
   return request<AnalyzeResponse>('/api/v1/analyze', {
     method: 'POST',
-    body: JSON.stringify({ chords, tonality }),
+    body: JSON.stringify({ chords, tonality: tonality || undefined }),
   });
 }
 
