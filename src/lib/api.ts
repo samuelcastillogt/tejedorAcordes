@@ -5,15 +5,19 @@ export type Chord = {
   root: string;
   type: string;
   family?: string;
+  label?: string;
   notes?: string[];
   triad: string[];
   circlePosition: number;
 };
 
+export type Criterion = { raw: number; weighted: number; detail: string };
+
 export type Connection = {
   target: string;
   score: number;
   category: 'natural' | 'media' | 'tensa' | 'extrema';
+  breakdown: Record<string, Criterion>;
 };
 
 export type ConnectionsResponse = {
@@ -29,6 +33,8 @@ export type Degree = {
   function: 'T' | 'SD' | 'D' | null;
   role: 'diatonic' | 'secondary_dominant' | 'borrowed' | 'chromatic';
   explanation: string;
+  approximated?: boolean;
+  substitutions?: { chord: string; kind: string; reason: string }[];
 };
 
 export type AnalyzeResponse = {
@@ -44,11 +50,20 @@ export type AnalyzeResponse = {
 
 export type TablatureResponse = {
   title: string;
+  tuning: string[];
   chords: string[];
   lines: string[];
   arpeggioLines: string[];
   text: string;
+  /** One diagram per chord; frets go from the high e string to the low E ("x" = muted). */
+  diagrams: { chord: string; frets: string[] }[];
 };
+
+export type ParsedChord = { input: string; chord: string | null; bass: string | null; approximated: boolean; error: string | null };
+
+export function parseChords(symbols: string[]) {
+  return request<{ results: ParsedChord[] }>('/api/v1/chords/parse', { method: 'POST', body: JSON.stringify({ symbols }) });
+}
 
 export class ApiError extends Error {
   constructor(
@@ -111,9 +126,7 @@ export function getChords() {
 export function getConnections(chordId: string, tonality: string) {
   const id = encodeURIComponent(chordId);
   const key = encodeURIComponent(tonality);
-  return request<ConnectionsResponse>(
-    `/api/v1/chords/${id}/connections?tonality=${key}&min_score=0&max_results=12`,
-  );
+  return request<ConnectionsResponse>(`/api/v1/chords/${id}/connections?tonality=${key}&min_score=0&max_results=40`);
 }
 
 /** Without a tonality the API detects the key from the chords. */
@@ -187,6 +200,10 @@ export function getSubscription() {
 
 export function listProgressions() {
   return request<{ progressions: Progression[]; total: number }>('/api/v1/progressions');
+}
+
+export function updateProgression(id: string, body: { name?: string; chords?: string[]; tonality?: string | null; isPublic?: boolean }) {
+  return request<Progression>(`/api/v1/progressions/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify(body) });
 }
 
 export function saveProgression(body: { name: string; chords: string[]; tonality?: string | null }) {

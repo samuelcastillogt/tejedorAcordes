@@ -1,5 +1,3 @@
-import Account from '@/screens/Account';
+import AccountScreen from '@/screens/account-screen';
 
-export default function CuentaRoute() {
-  return <Account />;
-}
+export default AccountScreen;

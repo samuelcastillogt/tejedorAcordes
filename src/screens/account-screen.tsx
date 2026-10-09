@@ -2,9 +2,8 @@ import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { cw } from '@/constants/chordweaver-theme';
+import { color, font } from '@/constants/theme';
 import { WEB_URL } from '@/constants/links';
 import { getSubscription, Subscription } from '@/lib/api';
 import { RecentLoginRequiredError, useAuth } from '@/lib/auth';
@@ -65,7 +64,7 @@ function SignInForm() {
       <Text style={styles.cardTitle}>{COPY[mode].title}</Text>
       <Text style={styles.helper}>Guarda tus progresiones y ábrelas también en la web.</Text>
       {mode === 'register' && (
-        <TextInput value={name} onChangeText={setName} placeholder="Tu nombre (opcional)" autoComplete="name" style={styles.input} placeholderTextColor={cw.muted} />
+        <TextInput value={name} onChangeText={setName} placeholder="Tu nombre (opcional)" autoComplete="name" style={styles.input} placeholderTextColor={color.inkMute} />
       )}
       <TextInput
         value={email}
@@ -75,7 +74,7 @@ function SignInForm() {
         autoCapitalize="none"
         autoComplete="email"
         style={styles.input}
-        placeholderTextColor={cw.muted}
+        placeholderTextColor={color.inkMute}
       />
       {mode !== 'reset' && (
         <TextInput
@@ -85,13 +84,13 @@ function SignInForm() {
           secureTextEntry
           autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
           style={styles.input}
-          placeholderTextColor={cw.muted}
+          placeholderTextColor={color.inkMute}
         />
       )}
       {error && <Text style={styles.errorText}>{error}</Text>}
       {notice && <Text style={styles.noticeText}>{notice}</Text>}
       <Pressable onPress={submit} disabled={pending} style={[styles.primaryButton, pending && styles.disabled]}>
-        {pending ? <ActivityIndicator color={cw.canvas} /> : <Text style={styles.primaryButtonText}>{COPY[mode].submit}</Text>}
+        {pending ? <ActivityIndicator color={color.card} /> : <Text style={styles.primaryButtonText}>{COPY[mode].submit}</Text>}
       </Pressable>
       <View style={styles.linkRow}>
         {mode !== 'login' && (
@@ -174,10 +173,9 @@ export default function Account() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} hitSlop={12}>
-          <Text style={styles.back}>‹ Volver</Text>
+    <ScrollView style={styles.safeArea} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <Pressable accessibilityRole="button" onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} hitSlop={12}>
+          <Text style={styles.back}>Cerrar</Text>
         </Pressable>
         <Text style={styles.eyebrow}>Cuenta</Text>
         <Text style={styles.title}>{user?.displayName || 'Mi cuenta'}</Text>
@@ -185,7 +183,7 @@ export default function Account() {
         {message && <Text style={styles.noticeText}>{message}</Text>}
 
         {!ready ? (
-          <ActivityIndicator color={cw.primary} />
+          <ActivityIndicator color={color.night} />
         ) : !accountsEnabled ? (
           <View style={styles.card}>
             <Text style={styles.helper}>Las cuentas no están disponibles en este momento.</Text>
@@ -208,7 +206,7 @@ export default function Account() {
                     : `${subscription.saved} progresiones guardadas · sin límite`}
                 </Text>
               )}
-              <Pressable onPress={() => router.push('/biblioteca')} style={styles.secondaryButton}>
+              <Pressable onPress={() => router.navigate('/biblioteca')} style={styles.secondaryButton}>
                 <Text style={styles.secondaryButtonText}>Ver mis progresiones</Text>
               </Pressable>
               <Pressable onPress={() => void logout()} style={styles.secondaryButton}>
@@ -220,7 +218,7 @@ export default function Account() {
               <Text style={styles.cardTitle}>Eliminar mi cuenta</Text>
               <Text style={styles.helper}>Borra tu cuenta, tu plan y todas tus progresiones. No se puede deshacer.</Text>
               <Pressable onPress={confirmDelete} disabled={deleting} style={[styles.dangerButton, deleting && styles.disabled]}>
-                {deleting ? <ActivityIndicator color={cw.danger} /> : <Text style={styles.dangerButtonText}>Eliminar mi cuenta</Text>}
+                {deleting ? <ActivityIndicator color={color.danger} /> : <Text style={styles.dangerButtonText}>Eliminar mi cuenta</Text>}
               </Pressable>
             </View>
           </>
@@ -237,34 +235,33 @@ export default function Account() {
             <Text style={styles.link}>Cómo se eliminan los datos</Text>
           </Pressable>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: cw.canvasSoft },
-  content: { gap: 16, padding: 18, paddingBottom: 64 },
-  back: { color: cw.primary, fontSize: 16, fontWeight: '700' },
-  eyebrow: { color: cw.muted, fontSize: 12, fontWeight: '800', letterSpacing: 2, textTransform: 'uppercase' },
-  title: { color: cw.ink, fontSize: 32, fontWeight: '800', letterSpacing: -0.8 },
-  card: { backgroundColor: cw.canvas, borderColor: cw.hairline, borderRadius: 20, borderWidth: 1, gap: 12, padding: 18 },
+  safeArea: { flex: 1, backgroundColor: color.paper },
+  content: { gap: 16, padding: 20, paddingBottom: 64 },
+  back: { color: color.night, fontSize: 16, fontFamily: font.uiBold },
+  eyebrow: { color: color.inkMute, fontSize: 12, fontFamily: font.uiBold, letterSpacing: 2, textTransform: 'uppercase' },
+  title: { color: color.ink, fontFamily: font.display, fontSize: 34 },
+  card: { backgroundColor: color.card, borderColor: color.hairline, borderRadius: 20, borderWidth: 1, gap: 12, padding: 18 },
   dangerCard: { borderColor: '#f2c8c3' },
-  cardTitle: { color: cw.ink, fontSize: 22, fontWeight: '800' },
-  label: { color: cw.muted, fontSize: 11, fontWeight: '800', letterSpacing: 1.8, textTransform: 'uppercase' },
-  value: { color: cw.ink, fontSize: 18, fontWeight: '700' },
-  helper: { color: cw.muted, fontSize: 14, lineHeight: 20 },
-  input: { backgroundColor: cw.canvasSoft, borderColor: cw.hairline, borderRadius: 12, borderWidth: 1, color: cw.ink, fontSize: 16, minHeight: 48, paddingHorizontal: 14 },
-  primaryButton: { alignItems: 'center', backgroundColor: cw.primary, borderRadius: 12, justifyContent: 'center', minHeight: 48, paddingHorizontal: 18 },
-  primaryButtonText: { color: cw.canvas, fontSize: 15, fontWeight: '800' },
-  secondaryButton: { alignItems: 'center', borderColor: cw.hairline, borderRadius: 12, borderWidth: 1, justifyContent: 'center', minHeight: 48 },
-  secondaryButtonText: { color: cw.ink, fontSize: 15, fontWeight: '700' },
-  dangerButton: { alignItems: 'center', borderColor: cw.danger, borderRadius: 12, borderWidth: 1, justifyContent: 'center', minHeight: 48 },
-  dangerButtonText: { color: cw.danger, fontSize: 15, fontWeight: '800' },
+  cardTitle: { color: color.ink, fontFamily: font.display, fontSize: 24 },
+  label: { color: color.inkMute, fontSize: 11, fontFamily: font.uiBold, letterSpacing: 1.8, textTransform: 'uppercase' },
+  value: { color: color.ink, fontSize: 18, fontFamily: font.uiBold },
+  helper: { color: color.inkMute, fontFamily: font.ui, fontSize: 14, lineHeight: 20 },
+  input: { backgroundColor: color.paper, borderColor: color.hairline, borderRadius: 12, borderWidth: 1, color: color.ink, fontFamily: font.ui, fontSize: 16, minHeight: 48, paddingHorizontal: 14 },
+  primaryButton: { alignItems: 'center', backgroundColor: color.night, borderRadius: 12, justifyContent: 'center', minHeight: 48, paddingHorizontal: 18 },
+  primaryButtonText: { color: color.card, fontSize: 15, fontFamily: font.uiBold },
+  secondaryButton: { alignItems: 'center', borderColor: color.hairline, borderRadius: 12, borderWidth: 1, justifyContent: 'center', minHeight: 48 },
+  secondaryButtonText: { color: color.ink, fontSize: 15, fontFamily: font.uiBold },
+  dangerButton: { alignItems: 'center', borderColor: color.danger, borderRadius: 12, borderWidth: 1, justifyContent: 'center', minHeight: 48 },
+  dangerButtonText: { color: color.danger, fontSize: 15, fontFamily: font.uiBold },
   disabled: { opacity: 0.6 },
   linkRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 18 },
-  link: { color: cw.primary, fontSize: 14, fontWeight: '700', textDecorationLine: 'underline' },
-  legal: { color: cw.muted, fontSize: 12, lineHeight: 18 },
-  errorText: { color: cw.danger, fontSize: 14, lineHeight: 20 },
-  noticeText: { color: '#1f8a70', fontSize: 14, fontWeight: '600', lineHeight: 20 },
+  link: { color: color.night, fontSize: 14, fontFamily: font.uiBold, textDecorationLine: 'underline' },
+  legal: { color: color.inkMute, fontSize: 12, lineHeight: 18 },
+  errorText: { color: color.danger, fontSize: 14, lineHeight: 20 },
+  noticeText: { color: '#1f8a70', fontSize: 14, fontFamily: font.uiMedium, lineHeight: 20 },
 });
