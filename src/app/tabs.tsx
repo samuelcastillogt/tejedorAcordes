@@ -1,9 +1,11 @@
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { cw } from '@/constants/chordweaver-theme';
-import { analyzeProgression, AnalyzeResponse, generateTablature, TablatureResponse } from '@/lib/api';
+import { analyzeProgression, AnalyzeResponse, generateTablature, isPlanLimitError, saveProgression, TablatureResponse } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { categoryColor, categoryLabel, functionColor } from '@/lib/music';
 
 const starterProgression = ['C', 'G7', 'Am', 'F'];
@@ -12,16 +14,57 @@ const quickChords = ['C', 'G', 'G7', 'Am', 'F', 'Dm', 'Em', 'A7', 'D', 'E7', 'Bm
 type Analysis = AnalyzeResponse['analysis'];
 
 export default function ProgressionScreen() {
-  const [name, setName] = useState('Nueva progresion movil');
+  const params = useLocalSearchParams<{ chords?: string; name?: string }>();
+  const { user, accountsEnabled } = useAuth();
+  const [name, setName] = useState('Nueva progresión');
   const [progression, setProgression] = useState(starterProgression);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [tablature, setTablature] = useState<TablatureResponse | null>(null);
   const [loading, setLoading] = useState<'analysis' | 'tablature' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Opened from the library: load that progression once per link (state adjusted during render).
+  const linkKey = params.chords ? `${params.name ?? ''}|${params.chords}` : null;
+  const [loadedLink, setLoadedLink] = useState<string | null>(null);
+  if (linkKey && linkKey !== loadedLink) {
+    setLoadedLink(linkKey);
+    setProgression(params.chords!.split(',').filter(Boolean));
+    if (params.name) setName(params.name);
+    setAnalysis(null);
+    setTablature(null);
+  }
+
   function clearGeneratedOutput() {
     setAnalysis(null);
     setTablature(null);
+    setSaved(null);
+  }
+
+  async function save() {
+    if (!user) {
+      router.push('/cuenta');
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    setSaved(null);
+    try {
+      const result = await saveProgression({ name: name.trim() || 'Progresión', chords: progression, tonality: analysis?.key.id ?? null });
+      setSaved(`Guardada en tu biblioteca: ${result.name}`);
+    } catch (err) {
+      // On Android the plan is not sold in the app (Play billing rules): only explain the limit.
+      setError(
+        isPlanLimitError(err)
+          ? 'Llegaste al límite de 5 progresiones del plan Gratis. Elimina alguna de tu biblioteca para guardar otra.'
+          : err instanceof Error
+            ? err.message
+            : 'No se pudo guardar',
+      );
+    } finally {
+      setSaving(false);
+    }
   }
 
   function addChord(chord: string) {
@@ -56,7 +99,7 @@ export default function ProgressionScreen() {
       const response = await generateTablature(name, progression);
       setTablature(response);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'No se pudo generar tablatura');
+      setError(err instanceof Error ? err.message : 'No se pudo generar la tablatura');
     } finally {
       setLoading(null);
     }
@@ -72,9 +115,9 @@ export default function ProgressionScreen() {
 
         <View style={styles.card}>
           <Text style={styles.label}>Nombre</Text>
-          <TextInput value={name} onChangeText={setName} style={styles.input} placeholder="Nombre de progresion" />
+          <TextInput value={name} onChangeText={setName} style={styles.input} placeholder="Nombre de la progresión" />
 
-          <Text style={styles.label}>Tu progresion</Text>
+          <Text style={styles.label}>Tu progresión</Text>
           <View style={styles.progressionRow}>
             {progression.map((chord, index) => (
               <Pressable key={`${chord}-${index}`} onPress={() => removeChord(index)} style={styles.progressionChip}>
@@ -83,7 +126,7 @@ export default function ProgressionScreen() {
             ))}
           </View>
 
-          <Text style={styles.helper}>Toca un acorde para quitarlo. Agrega acordes rapidos abajo.</Text>
+          <Text style={styles.helper}>Toca un acorde para quitarlo. Agrega acordes rápidos abajo.</Text>
           <View style={styles.quickGrid}>
             {quickChords.map((chord) => (
               <Pressable key={chord} onPress={() => addChord(chord)} style={styles.quickChip}>
@@ -98,7 +141,7 @@ export default function ProgressionScreen() {
               disabled={progression.length < 2 || loading !== null}
               style={[styles.secondaryButton, (progression.length < 2 || loading !== null) && styles.disabled]}
             >
-              {loading === 'analysis' ? <ActivityIndicator color={cw.ink} /> : <Text style={styles.secondaryButtonText}>Ver tension</Text>}
+              {loading === 'analysis' ? <ActivityIndicator color={cw.ink} /> : <Text style={styles.secondaryButtonText}>Ver tensión</Text>}
             </Pressable>
             <Pressable
               onPress={makeTablature}
@@ -110,6 +153,16 @@ export default function ProgressionScreen() {
           </View>
         </View>
 
+        {accountsEnabled && progression.length > 0 && (
+          <Pressable onPress={save} disabled={saving} style={[styles.saveButton, saving && styles.disabled]}>
+            {saving ? <ActivityIndicator color={cw.canvas} /> : <Text style={styles.primaryButtonText}>{user ? 'Guardar en mi biblioteca' : 'Entrar para guardar'}</Text>}
+          </Pressable>
+        )}
+        {saved && (
+          <Pressable onPress={() => router.push('/biblioteca')}>
+            <Text style={styles.savedText}>{saved} · Ver biblioteca</Text>
+          </Pressable>
+        )}
         {error && <Text style={styles.errorText}>{error}</Text>}
 
         {analysis && (
@@ -124,8 +177,8 @@ export default function ProgressionScreen() {
                 </View>
               ))}
             </View>
-            <Text style={styles.label}>Curva de tension</Text>
-            <Text style={styles.analysisScore}>Score promedio: {analysis.averageScore}</Text>
+            <Text style={styles.label}>Curva de tensión</Text>
+            <Text style={styles.analysisScore}>Fluidez promedio: {analysis.averageScore}</Text>
             <Text style={styles.helper}>{analysis.suggestions.join(' ')}</Text>
             {analysis.tensionCurve.map((point) => (
               <View key={`${point.from}-${point.to}`} style={styles.tensionRow}>
@@ -178,6 +231,8 @@ const styles = StyleSheet.create({
   secondaryButtonText: { color: cw.ink, fontSize: 15, fontWeight: '800' },
   disabled: { opacity: 0.5 },
   errorText: { color: cw.danger, fontSize: 14, lineHeight: 20 },
+  saveButton: { alignItems: 'center', backgroundColor: cw.tealMid, borderRadius: 12, justifyContent: 'center', minHeight: 48, paddingHorizontal: 18 },
+  savedText: { color: '#1f8a70', fontSize: 14, fontWeight: '700' },
   analysisScore: { color: cw.ink, fontSize: 20, fontWeight: '800' },
   degreeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginVertical: 8 },
   degreeChip: { borderTopWidth: 4, borderRadius: 8, backgroundColor: '#f6f1e7', paddingHorizontal: 10, paddingVertical: 6, alignItems: 'center' },

@@ -4,13 +4,15 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { cw } from '@/constants/chordweaver-theme';
-import { API_URL, Chord, Connection, getChords, getConnections } from '@/lib/api';
+import { Chord, Connection, getChords, getConnections } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { categoryColor, categoryLabel, chordFamilyColor } from '@/lib/music';
 
 const defaultChord = 'C';
 const defaultTonality = 'C';
 
 export default function Home() {
+  const { user, accountsEnabled } = useAuth();
   const [chords, setChords] = useState<Chord[]>([]);
   const [selectedChord, setSelectedChord] = useState(defaultChord);
   const [tonality, setTonality] = useState(defaultTonality);
@@ -29,7 +31,7 @@ export default function Home() {
         if (!cancelled) setChords(catalog);
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'No se pudo cargar el catalogo');
+          setError(err instanceof Error ? err.message : 'No se pudo cargar el catálogo');
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -76,29 +78,42 @@ export default function Home() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.hero}>
-          <Text style={styles.eyebrow}>ChordWeaver movil</Text>
-          <Text style={styles.title}>Encuentra el siguiente acorde desde el telefono.</Text>
-          <Text style={styles.subtitle}>
-            Explora conexiones armonicas, compara tension y prepara progresiones contra la API publicada en Vercel.
-          </Text>
-          <View style={styles.apiPill}>
-            <Text style={styles.apiText}>{API_URL}</Text>
+          <View style={styles.topBar}>
+            <Text style={styles.eyebrow}>ChordWeaver</Text>
+            {accountsEnabled && (
+              <Link href="/cuenta" asChild>
+                <Pressable style={styles.accountPill} hitSlop={8}>
+                  <Text style={styles.accountText}>{user ? user.displayName || 'Mi cuenta' : 'Entrar'}</Text>
+                </Pressable>
+              </Link>
+            )}
           </View>
-          <Link href={'/tabs' as never} asChild>
+          <Text style={styles.title}>Encuentra el siguiente acorde desde el teléfono.</Text>
+          <Text style={styles.subtitle}>
+            Descubre qué acordes conectan con el que estás tocando, mira la tensión de cada cambio y conviértelo en tablatura.
+          </Text>
+          <Link href="/tabs" asChild>
             <Pressable style={styles.heroButton}>
-              <Text style={styles.heroButtonText}>Abrir progresion y tablatura</Text>
+              <Text style={styles.heroButtonText}>Armar una progresión</Text>
             </Pressable>
           </Link>
+          {user && (
+            <Link href="/biblioteca" asChild>
+              <Pressable style={styles.heroLink} hitSlop={8}>
+                <Text style={styles.heroLinkText}>Mis progresiones guardadas</Text>
+              </Pressable>
+            </Link>
+          )}
         </View>
 
         {loading ? (
           <View style={styles.statusCard}>
             <ActivityIndicator color={cw.primary} />
-            <Text style={styles.statusText}>Cargando catalogo armonico...</Text>
+            <Text style={styles.statusText}>Cargando acordes…</Text>
           </View>
         ) : error ? (
           <View style={styles.errorCard}>
-            <Text style={styles.errorTitle}>No se pudo conectar con la API</Text>
+            <Text style={styles.errorTitle}>Sin conexión con ChordWeaver</Text>
             <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : (
@@ -147,7 +162,7 @@ export default function Home() {
 
             <View style={styles.card}>
               <Text style={styles.sectionLabel}>Sugerencias</Text>
-              <Text style={styles.sectionTitle}>Que puede seguir despues de {selectedChord}</Text>
+              <Text style={styles.sectionTitle}>Qué puede seguir después de {selectedChord}</Text>
               <View style={styles.connectionList}>
                 {connections.map((connection) => (
                   <Pressable
@@ -178,15 +193,11 @@ const styles = StyleSheet.create({
   eyebrow: { color: cw.violet, fontSize: 12, fontWeight: '700', letterSpacing: 2, textTransform: 'uppercase' },
   title: { color: cw.canvas, fontSize: 34, fontWeight: '700', letterSpacing: -1, lineHeight: 36 },
   subtitle: { color: '#d8d5e8', fontSize: 16, lineHeight: 23 },
-  apiPill: {
-    alignSelf: 'flex-start',
-    borderColor: cw.hairlineDark,
-    borderRadius: 999,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  apiText: { color: cw.canvas, fontSize: 11 },
+  topBar: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  accountPill: { borderColor: cw.hairlineDark, borderRadius: 999, borderWidth: 1, minHeight: 36, justifyContent: 'center', paddingHorizontal: 14 },
+  accountText: { color: cw.canvas, fontSize: 13, fontWeight: '700' },
+  heroLink: { alignSelf: 'center', minHeight: 36, justifyContent: 'center' },
+  heroLinkText: { color: cw.violet, fontSize: 14, fontWeight: '700', textDecorationLine: 'underline' },
   heroButton: {
     alignItems: 'center',
     alignSelf: 'flex-start',
