@@ -42,6 +42,13 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "description": "Analizador armónico en español: descubre qué acorde puede seguir, la tensión de cada cambio y conviértelo en tablatura."
+    "description": "Analizador armónico en español: descubre qué acorde puede seguir, la tensión de cada cambio y conviértelo en tablatura.",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "032af9f4-7424-4fbf-ac4d-8449e1e96c18"
+      }
+    },
+    "owner": "samuelcastillo"
   }
 }
