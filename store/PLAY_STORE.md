@@ -90,20 +90,21 @@ Nueva versión de ChordWeaver:
 | --- | --- | --- |
 | Ícono | `icono-512.png` | 512 × 512 PNG |
 | Gráfico destacado | `grafico-destacado-1024x500.png` | 1024 × 500 PNG o JPG |
-| Capturas de teléfono | **Por rehacer** con el build nuevo (ver abajo) | 2 a 8 capturas; 1080 × 1920 o 1080 × 2400 |
+| Capturas de teléfono | `capturas/01-analizar.png` … `07-que-acorde-es.png` | 2 a 8 capturas; 1080 × 1920 |
 
-Las capturas de `capturas/` muestran el diseño anterior: reemplázalas con capturas del build nuevo en un teléfono Android. Orden y texto sugerido para poner encima de cada una (titular corto, en Fraunces, sobre fondo noche):
+Siete capturas de la app actual (diseño nuevo), en este orden, cada una con su titular sobre el fondo de la marca:
 
-| # | Pantalla | Texto encima |
+| # | Archivo | Titular |
 | --- | --- | --- |
-| 1 | Analizar con una progresión analizada (tarjetas con grados y colores) | Entiende por qué suena así |
-| 2 | Tarjetas de grado con su función y sustituciones | Cada acorde, su función |
-| 3 | Explorar con sugerencias | Descubre qué acorde sigue |
-| 4 | Barra de reproducción sonando, acorde resaltado | Escucha tu progresión |
-| 5 | Hoja de acorde con diagrama de guitarra y piano | Míralo en guitarra y piano |
-| 6 | Tono y capo con las formas a tocar | Cambia de tono y usa capo |
-| 7 | Acordes → ¿Qué acorde es? con notas marcadas | ¿Qué acorde es? Tócalo y te decimos |
-| 8 | Biblioteca | Tus progresiones, también en la web |
+| 1 | `01-analizar.png` | Entiende por qué suena así |
+| 2 | `02-funcion.png` | Cada acorde, su función |
+| 3 | `03-explorar.png` | Descubre qué acorde sigue |
+| 4 | `04-escuchar.png` | Escucha tu progresión |
+| 5 | `05-guitarra-piano.png` | Míralo en guitarra y piano |
+| 6 | `06-tono-capo.png` | Cambia de tono y usa capo |
+| 7 | `07-que-acorde-es.png` | ¿Qué acorde es? |
+
+Se generan desde la app (los mismos componentes renderizados a 1170 px de ancho, sin la barra de estado ni la de pestañas del sistema) y se componen a 1080 × 1920, porque Play no acepta la proporción de pantalla de los teléfonos actuales (más de 2:1).
 
 ## Clasificación del contenido (cuestionario IARC)
 

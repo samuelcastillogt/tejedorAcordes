@@ -113,7 +113,8 @@ export default function AnalyzeScreen() {
               accessibilityLabel="Escribe acordes separados por espacios"
               style={{ flex: 1, minHeight: 48, borderRadius: radius.md, borderWidth: 1, borderColor: color.hairlineNight, backgroundColor: color.nightDeep, color: color.onNight, paddingHorizontal: 14, fontFamily: font.mono, fontSize: 16 }}
             />
-            <Button label="Agregar" variant="gold" onPress={addTyped} loading={parsing} disabled={!text.trim()} />
+            {/* Gold only when there is something to add: a dimmed gold reads as brown on night. */}
+            <Button label="Agregar" variant={text.trim() ? 'gold' : 'outlineNight'} onPress={addTyped} loading={parsing} disabled={!text.trim()} />
           </View>
           {inputError ? <Text style={{ color: '#ffb4a8', fontFamily: font.ui, fontSize: 13 }}>{inputError}</Text> : null}
         </NightHeader>
