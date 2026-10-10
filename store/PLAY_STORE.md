@@ -25,7 +25,7 @@ ChordWeaver: acordes y armonía
 **Descripción breve** (80 caracteres máx.)
 
 ```
-Descubre qué acorde sigue, la tensión de cada cambio y crea tablaturas.
+Entiende por qué suena así tu canción: tonalidad, grados, tensión y acordes.
 ```
 
 **Descripción completa** (4000 caracteres máx.)
@@ -33,25 +33,55 @@ Descubre qué acorde sigue, la tensión de cada cambio y crea tablaturas.
 ```
 ¿Por qué suena así una canción? ChordWeaver te lo explica en español.
 
-Elige un acorde y la app te muestra qué acordes conectan con él, ordenados de la conexión más natural a la más tensa. Arma tu progresión tocando acordes, pulsa «Ver tensión» y descubre la tonalidad, el grado de cada acorde (I, IV, V…) y su función: tónica, subdominante, dominante o prestado. Después conviértela en tablatura de guitarra con un toque.
+Escribe los acordes de cualquier canción, en cifrado americano (C, Am, G7) o latino (DO, LAm, SOL7), y ChordWeaver te dice al instante su tonalidad, el grado de cada acorde (I, IV, V…) y su función: tónica, subdominante, dominante o prestado. Cada función tiene su color, así entiendes la armonía de un vistazo.
 
-LO QUE PUEDES HACER
-• Encontrar el siguiente acorde: sugerencias según la tonalidad, con un puntaje de fluidez para cada cambio.
-• Analizar una progresión: tonalidad detectada automáticamente, grados en números romanos y colores por función armónica.
-• Ver la curva de tensión: qué cambios suenan suaves y cuáles generan tensión.
-• Generar tablatura: posiciones de guitarra y un arpegio sugerido, listos para copiar.
-• Guardar tus progresiones: crea una cuenta gratis y ábrelas también en la web de ChordWeaver.
+ANALIZA
+• Tonalidad detectada automáticamente, con la opción de elegirla tú.
+• Cada acorde con su grado romano, su función y una explicación clara.
+• Sustituciones: prueba un acorde relativo, una séptima o una preparación con un toque.
+• Curva de fluidez: qué cambios suenan suaves y cuáles generan tensión.
+• Cambia a grados para ver la estructura de la canción en cualquier tono.
+
+EXPLORA QUÉ SIGUE
+• Elige un acorde y descubre qué acordes conectan con él, de lo más natural a lo más atrevido.
+• Filtra por intención: Segura, Interesante o Atrevida.
+• Escucha cada cambio antes de elegirlo y agrégalo a tu progresión con un toque.
+
+TÓCALA
+• Escucha tu progresión con tempo ajustable y repetición; la app marca el acorde que suena.
+• Sube o baja el tono de toda la progresión y usa el capo: te mostramos qué formas tocar.
+• Diagramas de guitarra y piano para cada acorde.
+• Tablatura con posiciones y arpegio sugerido, lista para compartir.
+
+ACORDES
+• Diccionario de 192 acordes: mayores, menores, séptimas, maj7, sus, add9, disminuidos y más.
+• ¿Qué acorde es? Toca las notas en el piano y te decimos qué acordes las contienen.
+
+TU BIBLIOTECA
+• Crea una cuenta gratis y guarda tus progresiones.
+• Ábrelas también en la web de ChordWeaver, en cualquier dispositivo.
 
 PARA QUIÉN ES
-• Guitarristas que aprenden de oído o con cifrados y quieren entender lo que tocan.
-• Equipos de alabanza que preparan repertorio y cambian de tono.
+• Guitarristas y pianistas que aprenden con cifrados y quieren entender lo que tocan.
+• Equipos de alabanza que preparan repertorio, cambian de tono y usan capo.
 • Docentes y estudiantes de música que necesitan ejemplos claros de armonía.
-• Compositores que buscan una salida para su progresión.
+• Compositores que buscan el siguiente acorde de su canción.
 
 SIN PUBLICIDAD
-ChordWeaver no muestra anuncios ni ventanas emergentes. Puedes usar todas las herramientas sin crear una cuenta; la cuenta solo sirve para guardar tus progresiones.
+ChordWeaver no muestra anuncios ni ventanas emergentes. Todas las herramientas se usan sin crear cuenta; la cuenta solo sirve para guardar tus progresiones.
 
-Acepta cifrado americano (C, Dm, G7) y nombres latinos (DO, REm, SOL7).
+Hecho en Guatemala, en español, para músicos hispanohablantes.
+```
+
+**Novedades de esta versión** (500 caracteres máx.)
+
+```
+Nueva versión de ChordWeaver:
+• Análisis automático: escribe los acordes y verás tonalidad, grados y función al instante.
+• Nueva pestaña Explorar para descubrir y escuchar qué acorde sigue.
+• Diccionario de acordes con guitarra y piano, y búsqueda por notas.
+• Reproducción con tempo, repetición, tono y capo.
+• Nuevo diseño, igual al de la web.
 ```
 
 ## Gráficos
@@ -60,9 +90,20 @@ Acepta cifrado americano (C, Dm, G7) y nombres latinos (DO, REm, SOL7).
 | --- | --- | --- |
 | Ícono | `icono-512.png` | 512 × 512 PNG |
 | Gráfico destacado | `grafico-destacado-1024x500.png` | 1024 × 500 PNG o JPG |
-| Capturas de teléfono | `capturas/01-inicio.png` … `06-cuenta.png` | 2 a 8 capturas, 1080 × 1920 |
+| Capturas de teléfono | **Por rehacer** con el build nuevo (ver abajo) | 2 a 8 capturas; 1080 × 1920 o 1080 × 2400 |
 
-Las capturas salen de la app real con datos de ejemplo. Orden sugerido: inicio, sugerencias, editor, análisis, tablatura, cuenta.
+Las capturas de `capturas/` muestran el diseño anterior: reemplázalas con capturas del build nuevo en un teléfono Android. Orden y texto sugerido para poner encima de cada una (titular corto, en Fraunces, sobre fondo noche):
+
+| # | Pantalla | Texto encima |
+| --- | --- | --- |
+| 1 | Analizar con una progresión analizada (tarjetas con grados y colores) | Entiende por qué suena así |
+| 2 | Tarjetas de grado con su función y sustituciones | Cada acorde, su función |
+| 3 | Explorar con sugerencias | Descubre qué acorde sigue |
+| 4 | Barra de reproducción sonando, acorde resaltado | Escucha tu progresión |
+| 5 | Hoja de acorde con diagrama de guitarra y piano | Míralo en guitarra y piano |
+| 6 | Tono y capo con las formas a tocar | Cambia de tono y usa capo |
+| 7 | Acordes → ¿Qué acorde es? con notas marcadas | ¿Qué acorde es? Tócalo y te decimos |
+| 8 | Biblioteca | Tus progresiones, también en la web |
 
 ## Clasificación del contenido (cuestionario IARC)
 
