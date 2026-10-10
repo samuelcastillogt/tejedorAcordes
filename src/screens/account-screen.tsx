@@ -234,6 +234,9 @@ export default function Account() {
           <Pressable onPress={() => openWeb('/eliminar-cuenta/')} hitSlop={8}>
             <Text style={styles.link}>Cómo se eliminan los datos</Text>
           </Pressable>
+          <Pressable onPress={() => openWeb('/opinion/?origen=app')} hitSlop={8}>
+            <Text style={styles.link}>Danos tu opinión</Text>
+          </Pressable>
         </View>
     </ScrollView>
   );
